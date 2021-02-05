@@ -74,7 +74,7 @@ DROP TABLE IF EXISTS `commande`;
 CREATE TABLE IF NOT EXISTS `commande` (
   `Com_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Com_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Com_reduction` decimal(10,0) UNSIGNED NOT NULL DEFAULT '0',
+  `Com_reduction` decimal(4,2) UNSIGNED NOT NULL DEFAULT '0',
   `Com_Cli_id` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`Com_id`),
   KEY `Com_Cli_id` (`Com_Cli_id`)
@@ -95,13 +95,15 @@ COMMIT;
 -- Structure de la table `com_details`
 --
 
-DROP TABLE IF EXISTS `com_details`;
+DROP TABLE IF EXISTS `commande_details`;
 CREATE TABLE IF NOT EXISTS `com_details` (
   `Com_det_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Com_det_com_id` int(11) UNSIGNED NOT NULL,
   `Com_det_pro_id` int(11) UNSIGNED NOT NULL,
-  `Com_det_quantite` int(11) UNSIGNED OT NULL DEFAULT '1',
-  `Com_det_taxe` decimal(10,0) UNSIGNED NOT NULL DEFAULT '0',
+  `Com_det_quantite` int(11) UNSIGNED NOT NULL DEFAULT '1',
+  `Com_det_taxe` decimal(4,2) UNSIGNED NOT NULL DEFAULT '0',
+  `Com_det_quantite_livree` int(11) NOT NULL DEFAULT '0',
+  `Com_det_livree` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Com_det_id`),
   KEY `Com_det_com_id` (`Com_det_com_id`),
   KEY `Com_det_pro_id` (`Com_det_pro_id`)
@@ -148,11 +150,11 @@ CREATE TABLE IF NOT EXISTS `facture` (
   `Fac_edit` tinyint(1) NOT NULL DEFAULT '0',
   `fac_date_edit` datetime DEFAULT NULL,
   `Fac_date_paie` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Fac_paie` decimal(10,0) UNSIGNED NOT NULL,
+  `Fac_paie` decimal(10,2) UNSIGNED NOT NULL,
   `Fac_Com_id` int(11) UNSIGNED NOT NULL,
   `Fac_statut_paiement` varchar(25) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`Fac_id`),
-  KEY `Fac_Com_id` (`Fac_Com_id`)
+  UNIQUE KEY `Fac_Com_id` (`Fac_Com_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -188,9 +190,9 @@ CREATE TABLE IF NOT EXISTS `livraison` (
   `Liv_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Liv_date` date NOT NULL,
   `Liv_adresse` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Liv_Com_id` int(11) UNSIGNED NOT NULL,
+  `Liv_Com_det_id` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`Liv_id`),
-  KEY `Liv_Com_id` (`Liv_Com_id`)
+  UNIQUE KEY `Liv_Com_det_id` (`Liv_Com_det_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -201,7 +203,7 @@ CREATE TABLE IF NOT EXISTS `livraison` (
 -- Contraintes pour la table `livraison`
 --
 ALTER TABLE `livraison`
-  ADD CONSTRAINT `Livraison_commande` FOREIGN KEY (`Liv_Com_id`) REFERENCES `commande` (`Com_id`);
+  ADD CONSTRAINT `Livraison_commande` FOREIGN KEY (`Liv_Com_det_id`) REFERENCES `commande_details` (`Com_det_id`);
 COMMIT;
 
 --
@@ -213,9 +215,10 @@ CREATE TABLE IF NOT EXISTS `produits` (
   `Pro_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Pro_libelle` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Pro_description` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Pro_prix_HT` decimal(10,0) UNSIGNED NOT NULL,
+  `Pro_prix_HT` decimal(10,2) UNSIGNED NOT NULL,
   `Pro_photo` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Pro_stock` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `Pro_reference` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`Pro_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 COMMIT;
@@ -224,16 +227,16 @@ COMMIT;
 -- Structure de la table `pro_details`
 --
 
-DROP TABLE IF EXISTS `pro_details`;
+DROP TABLE IF EXISTS `produits_details`;
 CREATE TABLE IF NOT EXISTS `pro_details` (
-  `Pro_details_id` int(11) UNSIGNED NOT NULL,
-  `Pro_details_pro_id` int(11) UNSIGNED NOT NULL,
-  `Pro_details_Cat_id` int(11) UNSIGNED NOT NULL,
-  `Pro_details_Four_id` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY (`Pro_details_id`),
-  KEY `Pro_details_pro_id` (`Pro_details_pro_id`),
-  KEY `Pro_details_Four_id` (`Pro_details_Four_id`),
-  KEY `Pro_Cat_id` (`Pro_details_Cat_id`)
+  `Pro_det_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `Pro_det_pro_id` int(11) UNSIGNED NOT NULL,
+  `Pro_det_Cat_id` int(11) UNSIGNED NOT NULL,
+  `Pro_det_Four_id` int(11) UNSIGNED NOT NULL,
+  PRIMARY KEY (`Pro_det_id`),
+  KEY `Pro_det_pro_id` (`Pro_det_pro_id`),
+  KEY `Pro_det_four_id` (`Pro_det_Four_id`),
+  KEY `Pro_det_cat_id` (`Pro_det_Cat_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
