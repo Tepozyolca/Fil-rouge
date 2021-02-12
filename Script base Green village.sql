@@ -74,11 +74,13 @@ DROP TABLE IF EXISTS `commande`;
 CREATE TABLE IF NOT EXISTS `commande` (
   `Com_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Com_date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `Com_reduction` decimal(4,2) UNSIGNED NOT NULL DEFAULT '0',
+  `Com_reduction` decimal(4,2) UNSIGNED NOT NULL DEFAULT '0.00',
   `Com_Cli_id` int(11) UNSIGNED NOT NULL,
+  `Com_livree` boolean(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Com_id`),
   KEY `Com_Cli_id` (`Com_Cli_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 --
 -- Contraintes pour les tables déchargées
@@ -96,18 +98,17 @@ COMMIT;
 --
 
 DROP TABLE IF EXISTS `commande_details`;
-CREATE TABLE IF NOT EXISTS `com_details` (
+CREATE TABLE IF NOT EXISTS `commande_details` (
   `Com_det_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Com_det_com_id` int(11) UNSIGNED NOT NULL,
   `Com_det_pro_id` int(11) UNSIGNED NOT NULL,
   `Com_det_quantite` int(11) UNSIGNED NOT NULL DEFAULT '1',
-  `Com_det_taxe` decimal(4,2) UNSIGNED NOT NULL DEFAULT '0',
+  `Com_det_taxe` decimal(4,2) UNSIGNED NOT NULL DEFAULT '0.00',
   `Com_det_quantite_livree` int(11) NOT NULL DEFAULT '0',
-  `Com_det_livree` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`Com_det_id`),
   KEY `Com_det_com_id` (`Com_det_com_id`),
   KEY `Com_det_pro_id` (`Com_det_pro_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Contraintes pour les tables déchargées
