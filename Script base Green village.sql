@@ -221,6 +221,7 @@ CREATE TABLE IF NOT EXISTS `produits` (
   `Pro_stock` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `Pro_reference` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`Pro_id`)
+  UNIQUE KEY `Pro_reference` (`Pro_reference`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 COMMIT;
 
@@ -229,16 +230,14 @@ COMMIT;
 --
 
 DROP TABLE IF EXISTS `produits_details`;
-CREATE TABLE IF NOT EXISTS `pro_details` (
-  `Pro_det_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `produits_details` (
+  `Pro_details_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `Pro_det_pro_id` int(11) UNSIGNED NOT NULL,
-  `Pro_det_Cat_id` int(11) UNSIGNED NOT NULL,
   `Pro_det_Four_id` int(11) UNSIGNED NOT NULL,
-  PRIMARY KEY (`Pro_det_id`),
-  KEY `Pro_det_pro_id` (`Pro_det_pro_id`),
-  KEY `Pro_det_four_id` (`Pro_det_Four_id`),
-  KEY `Pro_det_cat_id` (`Pro_det_Cat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  PRIMARY KEY (`Pro_details_id`),
+  KEY `Pro_details_Four_id` (`Pro_det_Four_id`),
+  KEY `Pro_details_pro_id` (`Pro_det_pro_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Contraintes pour les tables déchargées
@@ -253,6 +252,28 @@ ALTER TABLE `pro_details`
   ADD CONSTRAINT `Produit_details_produits` FOREIGN KEY (`Pro_details_pro_id`) REFERENCES `produits` (`Pro_id`);
 COMMIT;
 
+--
+-- Structure de la table 'produits_details2'
+--
+
+DROP TABLE IF EXISTS `produits_details2`;
+CREATE TABLE IF NOT EXISTS `produits_details2` (
+  `pro_det2_id` int(10) UNSIGNED NOT NULL,
+  `pro_det2_cat_id` int(10) UNSIGNED NOT NULL,
+  PRIMARY KEY (`pro_det2_id`),
+  KEY `pro_det2_cat_id` (`pro_det2_cat_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `produits_details2`
+--
+ALTER TABLE `produits_details2`
+  ADD CONSTRAINT `Liste catégories produits` FOREIGN KEY (`pro_det2_cat_id`) REFERENCES `categories` (`Cat_id`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

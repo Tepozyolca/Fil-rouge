@@ -60,6 +60,7 @@ BEGIN
 	FROM produits
 		JOIN produits_details ON produits_details.pro_det_pro_id = produits.pro_id
 		JOIN fournisseur ON fournisseur.four_id = produits_details.pro_det_four_id
+		
 	WHERE produits.pro_id IN
 		(SELECT produits_details.pro_det_pro_id FROM produits_details WHERE produits_details.pro_det_pro_id = produits.pro_id)	
 		AND fournisseur.four_id IN 
